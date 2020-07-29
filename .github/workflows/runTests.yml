@@ -32,7 +32,7 @@ jobs:
         sudo snap install powershell --classic
     - name: Run smoke tests
       id: smokeTests
-      uses: PowerShell/GitHub-Actions/PesterActionV1
+      uses: PowerShell/GitHub-Actions/PesterActionV1@master
       with:
         script: './tests'
     - name: Upload pester results
