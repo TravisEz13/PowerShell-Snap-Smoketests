@@ -1,0 +1,42 @@
+on:
+  push:
+    branches:
+      - master
+    pull_request:
+      branches:
+        - master
+  defaults:
+    run:
+      shell: pwsh
+  jobs:
+    test_Pester_Action:
+      runs-on: ${{ matrix.os }}
+      strategy:
+        fail-fast: false
+        matrix:
+          os: [ubuntu-latest]
+      name: A job to run Pester on ${{ matrix.os }}
+      steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: make sure root own root
+        run: |
+          sudo chown root:root /
+      - name: apt uninstall cask
+        shell: bash
+        run: |
+          sudo apt remove powershell
+      - name: install powershell snap
+        shell: bash
+        run: |
+          sudo snap install powershell --classic
+      - name: Run smoke tests
+        id: smokeTests
+        uses: PowerShell/GitHub-Actions/PesterActionV1
+        with:
+          script: './tests'
+      - name: Upload pester results
+        uses: actions/upload-artifact@v2
+        with:
+          name: pester-results-${{ matrix.os }}
+          path: ${{ steps.smokeTests.outputs.logPath }}
