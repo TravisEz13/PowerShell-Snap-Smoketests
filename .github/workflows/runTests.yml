@@ -5,6 +5,8 @@ on:
   pull_request:
     branches:
       - master
+  milestone:
+    types: [created, opened]
 defaults:
   run:
     shell: pwsh
